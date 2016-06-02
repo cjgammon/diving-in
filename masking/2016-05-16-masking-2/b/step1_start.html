@@ -1,0 +1,54 @@
+<html>
+<head>
+  <style>
+  body{
+    margin:0;
+    overflow-x: hidden;
+    background-image: url(img/pattern.jpg);
+  }
+
+  section{
+    min-height: 800px;
+  }
+
+  .advanced{
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    transform: scale(3);
+    transform-origin: top center;
+  }
+
+  #gear{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+  }
+
+  #magic{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+  }
+
+  #battery{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+  }
+
+  </style>
+</head>
+<body>
+  <section class="advanced">
+    <div id="battery" class="button"></div>
+    <div id="gear" class="button"></div>
+    <div id="magic" class="button"></div>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<html>
+<head>
+  <style>
+  body{
+    margin:0;
+    overflow-x: hidden;
+    background-image: url(img/pattern.jpg);
+  }
+
+  section{
+    min-height: 800px;
+  }
+
+  .advanced{
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    transform: scale(3);
+    transform-origin: top center;
+  }
+
+  #gear{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+    -webkit-mask-image: url(img/gear.svg), url(img/gear.svg);
+    -webkit-mask-position: 0 0, -65px 0;
+    -webkit-mask-composite: source-out;
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    -webkit-transition: -webkit-mask-position .4s cubic-bezier(.44, .08, .10, 1);
+  }
+
+  #gear:hover{
+    -webkit-mask-position: 0 0, -65px -10px;
+  }
+
+  #magic{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+    -webkit-mask-size: 305px 60px;
+    -webkit-mask-image: url(img/magic.svg), url(img/magic.svg), url(img/magic.svg), url(img/magic.svg), url(img/magic.svg);
+    -webkit-mask-position: 0 0, -61px 0, -125px -5px, -167px 0px, -230px 0px;
+    -webkit-mask-composite: xor;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-transition: -webkit-mask-position .4s cubic-bezier(.44, .08, .10, 1);
+  }
+
+  #magic:hover{
+    -webkit-mask-position: 0 0, -61px 0, -140px -12px, -165px -10px, -220px -10px;
+  }
+
+  #battery{
+    margin: .5rem;
+    width: 61px;
+    height: 60px;
+    background: white;
+    -webkit-mask-size: 278px 60px;
+    -webkit-mask-image: url(img/battery.svg), url(img/battery.svg), url(img/battery.svg), url(img/battery.svg);
+    -webkit-mask-position: 0 0, -61px 0, -122px 0, -210px 0;
+    -webkit-mask-composite: source-out, destination-over, destination-in;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-transition: -webkit-mask-position 1s cubic-bezier(.44, .08, .10, 1);
+  }
+
+  #battery:hover{
+    -webkit-mask-position: 0 0, -61px 0, -122px 0, -182px 0;
+  }
+
+  </style>
+</head>
+<body>
+  <section class="advanced">
+    <div id="battery" class="button"></div>
+    <div id="gear" class="button"></div>
+    <div id="magic" class="button"></div>
+  </section>
+  <script>
+
+  </script>
+</body>
+</html>
