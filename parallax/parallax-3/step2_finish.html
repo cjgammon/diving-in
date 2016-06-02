@@ -1,0 +1,159 @@
+<html>
+<head>
+  <style>
+  body{
+    margin:0;
+    overflow-x: hidden;
+  }
+
+  header{
+    position: relative;
+    height: 500px;
+    background: linear-gradient(to bottom,  #589daa 0%, #e3e7db 30%);
+    background-attachment: fixed;
+  }
+
+  #logo{
+    display: block;
+    margin: auto;
+    position: relative;
+    top: 50px;
+  }
+
+  #fg{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .layer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .cloud{
+    width: 300px;
+    bottom: auto;
+  }
+
+  .small{
+    width: 100px;
+  }
+
+  #cloud1{
+    left: 50%;
+    top: 200px;
+  }
+
+  #cloud2{
+    left: 10%;
+    top: 100px;
+  }
+
+  #cloud3{
+    left: 70%;
+    top: 50px;
+    width: 150px;
+  }
+
+  section{
+    position: relative;
+    height: 500px;
+    background: #111628;
+  }
+
+  #canvas{
+    display: block;
+    margin: auto;
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <img id="cloud1" class="layer cloud small" data-offset="0.7" src="img/cloud.svg"/>
+    <img id="cloud2" class="layer cloud" data-offset="0.3" src="img/cloud.svg"/>
+    <img id="cloud3" class="layer cloud small" data-offset="0.4" src="img/cloud.svg"/>
+
+    <img id="layer4" class="layer" data-offset="1" src="img/layer-4.svg"/>
+    <img id="layer3" class="layer" data-offset="0.7" src="img/layer-3.svg"/>
+    <img id="layer2" class="layer" data-offset="0.5" src="img/layer-2.svg"/>
+    <img id="logo" class="layer" data-offset="-2" width="200" src="img/logo.svg"/>
+    <img id="fg" src="img/layer-1.svg"/>
+  </header>
+  <section>
+    <canvas id="canvas" width="460" height="460"></canvas>
+  </section>
+  <section>
+  </section>
+  <section>
+  </section>
+  <script>
+
+  var canvas = document.getElementById('canvas'),
+      ctx = canvas.getContext('2d'),
+      _canvasW = canvas.width,
+      _canvasH = canvas.height,
+      _canvasRect = canvas.getBoundingClientRect(),   //onresize
+      _winCenter = window.innerHeight / 2,            //onresize
+      loaded = 0,
+      layers = [
+        {url: 'img/2-layer1.png', offset: -0.2, x: 40, y: 70},
+        {url: 'img/2-layer2.png', offset: -0.3, x: 100, y: 100},
+        {url: 'img/2-layer3.png', offset: -0.4, x: 130, y: 140},
+        {url: 'img/2-light.png', offset: 2, x: 150, y: 140},
+        {url: 'img/2-mask.png', offset: 0, x: 0, y: 40}
+      ]; //TODO:: make script to generate this part
+
+  function init() {
+    for (var i = 0; i < layers.length; i += 1) {
+      var img = new Image();
+      img.src = layers[i].url;
+      img.onload = handle_img_load;
+      layers[i].img = img;
+    }
+
+    window.addEventListener('scroll', handle_scroll);
+  }
+
+  function handle_img_load() {
+    loaded += 1;
+
+    if (loaded == layers.length) {
+      animate();
+    }
+  }
+
+  function handle_scroll() {
+    _canvasRect = canvas.getBoundingClientRect();
+  }
+
+  function animate() {
+
+    ctx.clearRect(0, 0, _canvasW, _canvasH);
+
+    ctx.fillStyle = '#1B323D';
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillRect(0, 0, _canvasW, _canvasH);
+
+    for (var i = 0; i < layers.length; i += 1) {
+
+      var _elCenter = _canvasRect.top + (_canvasH / 2);  //center of layer from document top
+      var _scrollFromMiddle = _elCenter - _winCenter;  //distance between element center and viewport center
+      var _y = layers[i].y + (_scrollFromMiddle * layers[i].offset);//multiply by offset and add base y
+      //var _y = layers[i].y;
+
+      if (i == layers.length - 1) {
+        ctx.globalCompositeOperation = "destination-in";
+      }
+
+      ctx.drawImage(layers[i].img, layers[i].x, _y);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  init();
+  </script>
+</body>
+</html>

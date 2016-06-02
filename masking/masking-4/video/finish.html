@@ -1,0 +1,84 @@
+<html>
+<head>
+  <style>
+  body{
+    margin: 0;
+    background: #9DEEFF;
+  }
+
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="500" height="500"></canvas>
+
+  <script>
+  var canvas = document.getElementById('myCanvas'),
+    ctx = canvas.getContext('2d'),
+    delta = 0,
+    move = false;
+    video = document.createElement('video'),
+    videocanvas = document.createElement('canvas'),
+    videoctx = videocanvas.getContext('2d');
+
+videocanvas.width = 640;
+videocanvas.height = 360;
+
+video.src = "homie (loop)-SD.mov";
+video.play();
+video.loop = true;
+video.volume = 0;
+
+//document.body.appendChild(videocanvas)
+
+function drawMask() {
+
+  videoctx.drawImage(video, 0, 0);
+
+  var imgd = videoctx.getImageData(0, 0, videocanvas.width, videocanvas.height),
+      pix = imgd.data,
+      i;
+
+  for (i = 0, n = pix.length; i < n; i += 4) {
+    pix[i + 3] = pix[i];
+  }
+
+  videoctx.putImageData(imgd, 0, 0);
+}
+
+function draw() {
+
+  ctx.globalCompositeOperation = 'source-over';
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#BAE858";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (move) {
+      ctx.fillStyle = "#FF008E";
+      ctx.fillRect(0, 0, 500, 200);
+    }
+
+  ctx.globalCompositeOperation = 'destination-in';
+
+  drawMask();
+
+  ctx.drawImage(videocanvas, 0, 0);
+
+  requestAnimationFrame(draw);
+}
+
+requestAnimationFrame(draw);
+
+draw();
+
+canvas.onmouseover = function () {
+  move = true;
+}
+
+canvas.onmouseout = function () {
+  move = false;
+}
+
+  </script>
+</body>
+</html>

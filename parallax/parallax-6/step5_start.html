@@ -1,0 +1,151 @@
+<html>
+<head>
+  <style>
+  body{
+    margin:0;
+    overflow-x: hidden;
+    background: #111628;
+  }
+
+  section{
+    position: relative;
+    min-height: 500px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #square{
+    width: 100px;
+    height: 100px;
+  }
+
+  [data-inview=""] {
+    background: white;
+  }
+
+  [data-inview="3"] {
+    background: green;
+  }
+
+  [data-inview="2"] {
+    background: yellow;
+  }
+
+  [data-inview="1"] {
+    background: orange;
+  }
+
+  [data-inview="0"] {
+    background: red;
+  }
+
+  #triggerStatus{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    color: white;
+    padding: 1em;
+    font-family: sans-serif;
+    font-size: 2em;
+    z-index: 100;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+  }
+  </style>
+</head>
+<body>
+  <div id="triggerStatus"></div>
+  <section>
+
+  </section>
+  <section>
+
+  </section>
+  <section>
+
+  </section>
+  <section>
+    <div id="square" data-inview=""></div>
+  </section>
+  <section>
+
+  </section>
+  <section>
+
+  </section>
+  <script>
+    function updateInview() {
+      console.log('//checking inview')
+      var elems = document.querySelectorAll('[data-inview]'),
+          i;
+
+      for (i = 0; i < elems.length; i++) {
+        var rect = elems[i].getBoundingClientRect(),
+            prevValue = elems[i].dataset.inview,
+            newValue,
+            inviewEvent;
+
+        if (rect.top > window.innerHeight || rect.bottom < 0) {
+          newValue = "0";
+        } else if (rect.top < (window.innerHeight / 2) - (rect.height / 2) && rect.top > 0) {
+          newValue = "3";
+        } else if (rect.bottom < window.innerHeight && rect.top > 0) {
+          newValue = "2";
+        } else {
+          newValue = "1";
+        }
+
+        if (newValue !== prevValue) {
+          elems[i].dataset.inview = newValue;
+          inviewEvent = new CustomEvent('inview', {'detail': newValue});
+          elems[i].dispatchEvent(inviewEvent);
+        }
+      }
+    }
+
+
+    function addInviewListener() {
+      var elems = document.querySelectorAll('[data-inview]'),
+          i;
+
+      for (i = 0; i < elems.length; i++) {
+        elems[i].addEventListener('inview', function (e) {
+          switch (e.detail) {
+            case "0":
+              triggerStatus.innerHTML = "0: Element outside of viewport";
+            break;
+            case "1":
+              triggerStatus.innerHTML = "1: Element partially in viewport";
+            break;
+            case "2":
+              triggerStatus.innerHTML = "2: Element inside viewport but below center";
+            break;
+            case "3":
+              triggerStatus.innerHTML = "3: Element inside viewport above center";
+            break;
+          }
+          console.log('inview:' + e.detail);
+        });
+      }
+    }
+
+    addInviewListener();
+    requestAnimationFrame(loop);
+
+    var scrolled = false;
+
+    window.addEventListener('scroll', function () {
+      scrolled = true;
+    })
+
+    function loop() {
+      if (scrolled) {
+        updateInview();
+      }
+      scrolled = false;
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>

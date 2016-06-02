@@ -1,0 +1,142 @@
+<html>
+<head>
+  <style>
+    body{
+      margin:0;
+      overflow-x: hidden;
+    }
+
+    header{
+      position: relative;
+      height: 500px;
+      background: linear-gradient(to bottom,  #589daa 0%, #e3e7db 30%);
+      background-attachment: fixed;
+    }
+
+    #logo{
+      display: block;
+      margin: auto;
+      position: relative;
+      top: 50px;
+    }
+
+    #fg{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .layer{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    .cloud{
+      width: 300px;
+      bottom: auto;
+    }
+
+    .small{
+      width: 100px;
+    }
+
+    #cloud1{
+      left: 50%;
+      top: 200px;
+    }
+
+    #cloud2{
+      left: 10%;
+      top: 100px;
+    }
+
+    #cloud3{
+      left: 70%;
+      top: 50px;
+      width: 150px;
+    }
+
+    section{
+      position: relative;
+      height: 500px;
+      background: #111628;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img id="cloud1" class="layer cloud small" data-offset="0.7" src="img/cloud.svg"/>
+    <img id="cloud2" class="layer cloud" data-offset="0.3" src="img/cloud.svg"/>
+    <img id="cloud3" class="layer cloud small" data-offset="0.4" src="img/cloud.svg"/>
+
+    <img id="layer4" class="layer" data-offset="1" src="img/layer-4.svg"/>
+    <img id="layer3" class="layer" data-offset="0.7" src="img/layer-3.svg"/>
+    <img id="layer2" class="layer" data-offset="0.5" src="img/layer-2.svg"/>
+    <img id="logo" class="layer" data-offset="-2" width="200" src="img/logo.svg"/>
+    <img id="fg" src="img/layer-1.svg"/>
+  </header>
+  <section>
+  </section>
+  <section>
+  </section>
+  <section>
+  </section>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js"></script>
+  <script>
+
+  var layers = [],
+      layerElements = document.getElementsByClassName('layer'),
+      _scrollY = window.scrollY;
+
+    function init() {
+      for (var i = 0; i < layerElements.length; i += 1) {
+        var el = layerElements[i];
+        var offset = layerElements[i].dataset.offset;
+        layers.push({el: el, y: 0, offset: offset});
+      }
+
+      window.addEventListener('scroll', handle_scroll);
+      requestAnimationFrame(animate);
+    }
+
+    function handle_scroll(e) {
+      _scrollY = window.scrollY;
+      //animateTween();
+    }
+
+    /*
+    function animateTween() {
+      for (var i = 0; i < layers.length; i += 1) {
+        var oldY = layers[i].y;
+        layers[i].y = _scrollY * layers[i].offset;
+        //if (oldY !== layers[i].y) {
+          TweenMax.to(layers[i].el, 0.5, {
+            y: layers[i].y,
+            overwrite: 'all'
+          });
+        //}
+      }
+    }
+    */
+
+    function animate() {
+      //_scrollY = window.scrollY;  //for mobile only?
+
+      for (var i = 0; i < layers.length; i += 1) {
+        var oldY = layers[i].y;
+        layers[i].y = _scrollY * layers[i].offset;
+
+        if (oldY !== layers[i].y) {
+          layers[i].el.style.transform = 'translateY(' + layers[i].y + 'px)';
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    init();
+  </script>
+</body>
+</html>

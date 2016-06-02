@@ -1,0 +1,190 @@
+<html>
+<head>
+  <style>
+  body{
+    margin:0;
+    overflow-x: hidden;
+  }
+
+  header{
+    position: relative;
+    height: 500px;
+    background: linear-gradient(to bottom,  #589daa 0%, #e3e7db 30%);
+    background-attachment: fixed;
+  }
+
+  #logo{
+    display: block;
+    margin: auto;
+    position: relative;
+    top: 50px;
+  }
+
+  #fg{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .layer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .abs{
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .layer2{
+    display: block;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+  }
+
+  .cloud{
+    width: 300px;
+    bottom: auto;
+  }
+
+  .small{
+    width: 100px;
+  }
+
+  #cloud1{
+    left: 50%;
+    top: 200px;
+  }
+
+  #cloud2{
+    left: 10%;
+    top: 100px;
+  }
+
+  #cloud3{
+    left: 70%;
+    top: 50px;
+    width: 150px;
+  }
+
+  section{
+    position: relative;
+    min-height: 500px;
+    background: #111628;
+  }
+
+  #section3{
+    height: 1400px;
+    overflow: hidden;
+  }
+
+  #scrollPath{
+    opacity: 0;
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <img id="cloud1" class="layer cloud small" data-offset="0.7" src="img/cloud.svg"/>
+    <img id="cloud2" class="layer cloud" data-offset="0.3" src="img/cloud.svg"/>
+    <img id="cloud3" class="layer cloud small" data-offset="0.4" src="img/cloud.svg"/>
+
+    <img id="layer4" class="layer" data-offset="1" src="img/layer-4.svg"/>
+    <img id="layer3" class="layer" data-offset="0.7" src="img/layer-3.svg"/>
+    <img id="layer2" class="layer" data-offset="0.5" src="img/layer-2.svg"/>
+    <img id="logo" class="layer" data-offset="-2" width="200" src="img/logo.svg"/>
+    <img id="fg" src="img/layer-1.svg"/>
+  </header>
+  <section>
+  </section>
+  <section id="section3">
+    <img class="layer layer2" src="img/3-bg.svg" alt="">
+    <img id="light" class="abs" src="img/2-light.png" alt="">
+    <img class="layer layer2" src="img/3-mask.svg" alt="">
+    <svg class="layer layer2" version="1.1" id="scrollPath" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    	 viewBox="0 0 1280 1435" style="enable-background:new 0 0 1280 1435;" xml:space="preserve" preserveAspectRatio="xMidYMid meet">
+      <rect id="scrollBg" x="0" y="0" width="1280" height="1435" fill="rgba(0, 0, 0, 0.5)"/>
+      <polyline id="scrollLine" points="864.8,113.9 660.8,450 459.8,402 345,652 693,908 999,1096 " fill="none" stroke="#5e0000" stroke-miterlimit="10" stroke-width="10"/>
+    </svg>
+  </section>
+  <section>
+  </section>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js"></script>
+  <script>
+
+  var svg = document.getElementById('scrollPath'),
+      path = document.getElementById('scrollLine'),
+      light = document.getElementById('light'),
+      bg = document.getElementById('scrollBg'),
+      points = path.getAttribute('points'),
+      _rectH = svg.clientHeight,
+      _winCenter = window.innerHeight / 2,
+      _duration = 1,
+      _tween;
+
+  function init() {
+    var _values = [];
+
+    _winCenter = window.innerHeight / 2,
+    _rectH = svg.clientHeight,
+    //_duration = window.innerHeight / 1000,
+    _points = points.split(/[ ,]+/);
+    _rect = bg.getBoundingClientRect();
+
+    for (var i = 0; i < _points.length -2; i += 2) {
+      var _x = parseFloat(_points[i]) + _rect.left,
+          _y = parseFloat(_points[i + 1]);
+
+      _values.push({
+        x: _x - (light.width / 2),
+        y: _y - (light.height / 2)
+      });
+    }
+
+    TweenMax.set('#light', {x: _values[0].x, y: _values[0].y});
+    _tween = new TweenMax('#light', _duration, {bezier: {
+          type: "thru",
+          curviness: 0,
+          values: _values
+       },
+       paused: true
+    });
+
+    window.addEventListener('scroll', handle_scroll);
+    animate();
+  }
+
+  function handle_scroll() {
+    _rect = bg.getBoundingClientRect();
+  }
+
+  function animate() {
+    var _elCenter = _rect.top + (_rectH / 2);  //center of layer from document top
+    var _scrollFromMiddle =  - (_elCenter - _winCenter);
+    var _time = (_scrollFromMiddle) / 1000;     //window.innerHeight; //multiplier decides how fast it animates
+
+    _time -= _duration / 2;
+
+    /*
+    if (_time > 0) {
+      _time = 0;
+    } else if (_time < -_duration) {
+      _time = -_duration;
+    }
+    */
+    //_time = _time > 0 ? _duration : _time;             //just capping at 0 or -_duraton
+  //  _time = _time < -_duration ? -_duration : _time;
+
+    _tween.time(_time);
+
+    requestAnimationFrame(animate);
+  }
+
+  init();
+
+  </script>
+</body>
+</html>
