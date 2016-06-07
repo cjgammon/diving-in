@@ -1,0 +1,90 @@
+<html>
+<head>
+  <style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-image: linear-gradient(45deg, rgb(85, 85, 85) 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0)), linear-gradient(-45deg, rgb(85, 85, 85) 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0)), linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, rgb(85, 85, 85) 75%), linear-gradient(-45deg, rgba(0, 0, 0, 0) 75%, rgb(85, 85, 85) 75%);;
+    background-size: 50px 50px;
+  }
+
+  canvas{
+    background: transparent;
+  }
+
+  </style>
+</head>
+<body>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+  <script id="vertShader" type="x-shader/x-fragment">
+  void main()
+  {
+    gl_Position = projectionMatrix *
+                  modelViewMatrix *
+                  vec4(position,1.0);
+  }
+  </script>
+  <script id="fragShader" type="x-shader/x-fragment">
+  void main(void)
+  {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+  }
+  </script>
+
+  <script>
+
+  function World() {
+
+    this.constructor = function() {
+      this.scene = new THREE.Scene();
+      this.renderer = new THREE.WebGLRenderer({alpha: true});
+      this.renderer.setClearColor(0x000000, 0);
+      document.body.appendChild(this.renderer.domElement);
+      this.resize();
+
+      this.addObject();
+
+      requestAnimationFrame(this.render.bind(this));
+      window.addEventListener('resize', this.resize.bind(this));
+    }
+
+
+    this.addObject = function() {
+
+      var vertShader = document.getElementById('vertShader').innerHTML;
+      var fragShader = document.getElementById('fragShader').innerHTML;
+      var attributes = {};
+      var uniforms = {
+        texture1: { type: "t", value: THREE.ImageUtils.loadTexture( "bw.jpg" ) }
+      };
+      var material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        attributes: attributes,
+        vertexShader: vertShader,
+        fragmentShader: fragShader,
+        transparent: true
+      });
+      var geometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight, 50);
+      this.cube = new THREE.Mesh(geometry, material);
+      this.scene.add(this.cube);
+    }
+
+    this.render = function() {
+      requestAnimationFrame(this.render.bind(this));
+      this.renderer.render(this.scene, this.camera);
+    }
+
+    this.resize = function() {
+      this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      this.camera.position.z = 1000;
+
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+  }
+
+  var _w = new World();
+  _w.constructor();
+  </script>
+</body>
+</html>
