@@ -13,7 +13,56 @@
 
     <canvas id="myCanvas"></canvas>
 
-<script src="three.js"></script>
+    <script src="three.js"></script>
+
+<script type="x-shader/x-vertex" id="vertexShader">
+void main() 
+{
+	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+	gl_Position = projectionMatrix * modelViewPosition;
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader">
+void main() {
+	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="vertexShader2">
+attribute float vertexDisplacement;
+uniform float delta;
+varying float vOpacity;
+varying vec3 vUv;
+
+void main() 
+{
+    vUv = position;
+    vOpacity = vertexDisplacement;
+
+    vec3 p = position;
+
+    p.x += sin(vertexDisplacement) * 50.0;
+    p.y += cos(vertexDisplacement) * 50.0;
+
+	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+	gl_Position = projectionMatrix * modelViewPosition;
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader2">
+uniform float delta;
+varying float vOpacity;
+varying vec3 vUv;
+
+void main() {
+
+    float r = 1.0 + cos(vUv.x * delta);
+    float g = 0.5 + sin(delta) * 0.5;
+    float b = 0.0;
+    vec3 rgb = vec3(r, g, b);
+
+	gl_FragColor = vec4(rgb, vOpacity);
+}
+</script>
 
 
     <script>
@@ -23,15 +72,11 @@
     	camera,
     	myCanvas = document.getElementById('myCanvas');
 
-
-
     //RENDERER
     renderer = new THREE.WebGLRenderer({
       canvas: myCanvas, 
-      antialias: true,
-     // logarithmicDepthBuffer: true
+      antialias: true
     });
-    //renderer.setClearColor(0x000000);
     renderer.setClearColor(0xffffff);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,7 +86,6 @@
 
     //SCENE
     scene = new THREE.Scene();
-    //scene.overrideMaterial = new THREE.MeshDepthMaterial();
 
     //LIGHTS
     var light = new THREE.AmbientLight(0xffffff, 0.5);
@@ -50,170 +94,29 @@
     var light2 = new THREE.PointLight(0xffffff, 0.5);
     scene.add(light2);
   
-    /*
-    var material = new THREE.Material({
-      transparent: true,
-      opacity: 0.5,
-      depthTest: true,
-      depthWrite: true,
-      depthFunc: THREE.LessEqualDepth,
-      blending: THREE.NormalBlending,
-      blendSrc: THREE.SrcAlphaFactor,
-      blendDst: THREE.OneMinusSrcAlphaFactor,
-      blendEquation: THREE.AddEquation,
-      polygonOffset: false,
-      polygonOffsetFactor: 0,
-      polygonOffsetUnits: 0,
-      clippingPlanes: null,
-      clipShadows: false,
-      overdraw: 0,
-      needsUpdate: false,
-      alphaTest: 0,
-      visible: true,
-      side: THREE.FrontSide //THREE.BackSide, THREE.DoubleSide
-    });
-    */
- 
-    /*
-    //flat color
-    var material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
-      wireframe: false,
-      wireframeLinewidth: 1,
-      wireframeLinecap: 'round',
-      wireframeLinejoin: 'round',
-      shading: THREE.SmoothShading,
-      vertexColors: THREE.NoColors, //used if colors on geomtry
-      reflectivity: 1,
-      refractionRatio: 0.98,
-      combine: THREE.MultiplyOperation,
-      fog: true,
-      aoMap: null,
-      aoMapIntensity: 1,
-      envMap: null,
-      map: null,
-      specularMap: null,
-      alphaMap: null,
-      skinning: false,
-      morphTargets: false
-    });
-    */
-
-    /*
-    //maps normal vectors to RGB colors
-    var material = new THREE.MeshNormalMaterial({
-      wireframe: false,
-      wireframeLineWidth: 1,
-      morphTargets: false,
-      transparent: false,
-      opacity: 1,
-      depthTest: true,
-      depthWrite: true,
-      depthFunc: THREE.LessEqualDepth,
-      blending: THREE.NormalBlending,
-      blendSrc: THREE.SrcAlphaFactor,
-      blendDst: THREE.OneMinusSrcAlphaFactor,
-      blendEquation: THREE.AddEquation,
-      polygonOffset: false,
-      polygonOffsetFactor: 0,
-      polygonOffsetUnits: 0,
-      clippingPlanes: null,
-      clipShadows: false,
-      overdraw: 0,
-      needsUpdate: false,
-      alphaTest: 0,
-      visible: true,
-      side: THREE.FrontSide //THREE.BackSide, THREE.DoubleSide
-    });
-    */
-
-    /*    
-    //non-shiny material
-    var material = new THREE.MeshLambertMaterial({
-      color: 0xF3FFE2,
-      lightMap: null,
-      lightMapIntensity: 1,
-      emissive: 0x000000,
-      emissiveMap: null,
-      emissiveIntensity: 1,
-      specularMap: null
-    });
-    */
-
-    /*
-    //shiny material
-    var material = new THREE.MeshPhongMaterial({
-      color: 0xF3FFE2,
-      specular: 0xffffff,
-      shininess: 1000,
-      lightMap: null,
-      lightMapIntensity: 1,
-      bumpMap: null,
-      bumpScale: 1,
-      normalMap: null,
-      normalScale: 1,
-      displacementMap: null,
-      displacementScale: 1,
-      displacementBias: 0,
-      specularMap: null
-    });
-    */
-
-    /*
-    //combination of non-shiny/shiny material
-    var material = new THREE.MeshStandardMaterial({
-      color: 0xF3FFE2,
-      roughness: 0.5,
-      metalness: 0.5
-    });
-    */
-
-   /* 
-    //PBR - physical based renderer
-    var material = new THREE.MeshPhysicalMaterial({
-      color: 0xF3FFE2,
-      roughness: 0,
-      metalness: 0.5,
-      reflectivity: 0.5,
-      clearCoat: 0,
-      claerCoatRoughness: 0
-    });
-   */ 
-
     
-    //depth
-    //var material = new THREE.MeshDepthMaterial();
-    
-
-    //var material = new THREE.MeshMultiMaterial({color: 0xF3FFE2});
-
-
-    /*
     //Custom Shader Material
-    //Built in uniforms and attributes:
-    //http://threejs.org/docs/api/renderers/webgl/WebGLProgram.html
-
+    /*
     var material = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 1.0 },
-        resolution: { value: new THREE.Vector2() }
-      },
-      attributes: {
-        vertexOpacity: { value: [] }
-      },
-      vertexShader: '',
-      fragmentShader: ''
+        uniforms: [],
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader').textContent
     });
     */
 
-    /*
-    //Custom Shader Material where built-in uniforms and attributes are not automatically prepended to teh code
-    var material = new THREE.RawShaderMaterial({color: 0xF3FFE2});
-    */
+
+    var customUniforms = {
+        delta: {value: 0}
+    };
+    var material = new THREE.ShaderMaterial({
+        uniforms: customUniforms,
+        vertexShader: document.getElementById('vertexShader2').textContent,
+        fragmentShader: document.getElementById('fragmentShader2').textContent
+    });
+
 
     
-    var geometry = new THREE.BoxGeometry(100, 100, 100);
-    geometry.computeLineDistances();
+    var geometry = new THREE.BoxBufferGeometry(100, 100, 100, 10, 10, 10);
     var mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = -1000;
     mesh.position.x = -100;
@@ -232,107 +135,16 @@
     mesh3.rotation.x = -90 * Math.PI / 180;
     mesh3.position.y = -100;
     scene.add(mesh3);
-    
 
 
-    /////////////////////Lines
+    //attribute
+    var vertexDisplacement = new Float32Array(geometry.attributes.position.count);
 
+    for (var i = 0; i < vertexDisplacement.length; i ++) {
+        vertexDisplacement[i] = Math.sin(i);
+    }
 
-    /*
-    //Line material
-    var material = new THREE.LineBasicMaterial({
-      color: 0xF3FFE2,
-      linewidth: 2
-    });
-    */
-
-    /*
-    //Dashed line **also compute distance of geometry**
-    var material = new THREE.LineDashedMaterial({
-      color: 0xF3FFE2,
-      linewidth: 1,
-      dashSize: 2, 
-      gapSize: 2
-    });
-    */
-
-    /*
-    var geometry = new THREE.BoxGeometry(100, 100, 100);
-    var mesh = new THREE.Line(geometry, material);
-    mesh.position.z = -1000;
-    mesh.position.x = -100;
-    scene.add(mesh);
-
-
-    var geometry2 = new THREE.SphereGeometry(50, 20, 20);
-    var mesh2 = new THREE.Line(geometry2, material);
-    mesh2.position.z = -1000;
-    mesh2.position.x = 100;
-    scene.add(mesh2);
-
-
-    var geometry3 = new THREE.PlaneGeometry(10000, 10000, 100, 100);
-    var mesh3 = new THREE.Line(geometry3, material);
-    mesh3.rotation.x = -90 * Math.PI / 180;
-    mesh3.position.y = -100;
-    scene.add(mesh3);
-    */
-
-
-    //for dashed lines
-    /*
-    geometry.computeLineDistances();
-    geometry2.computeLineDistances();
-    geometry3.computeLineDistances();
-    */
-
-
-
-    /////////////////////Points
-
-    /*
-    //Points material
-    var material = new THREE.PointsMaterial({color: 0xF3FFE2});
-    
-    var geometry = new THREE.BoxGeometry(100, 100, 100);
-    var mesh = new THREE.Points(geometry, material);
-    mesh.position.z = -1000;
-    mesh.position.x = -100;
-    scene.add(mesh);
-
-
-    var geometry2 = new THREE.SphereGeometry(50, 20, 20);
-    var mesh2 = new THREE.Points(geometry2, material);
-    mesh2.position.z = -1000;
-    mesh2.position.x = 100;
-    scene.add(mesh2);
-
-
-    var geometry3 = new THREE.PlaneGeometry(10000, 10000, 100, 100);
-    var mesh3 = new THREE.Points(geometry3, material);
-    mesh3.rotation.x = -90 * Math.PI / 180;
-    mesh3.position.y = -100;
-    scene.add(mesh3);
-    */
-
-
-
-    ////////////////////Sprite
-
-    /*
-    //Sprite material    
-    var material = new THREE.SpriteMaterial({
-      //map: new THREE.TextureLoader().load("59e37674fe09dc0ea6caf1b87115c575.jpg"),
-      color: 0xF3FFE2
-    });
-
-
-    var mesh = new THREE.Sprite(material);
-    mesh.scale.set(100, 100, 100);
-    mesh.position.z = -1000;
-    scene.add(mesh);
-    */
-
+    geometry.addAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
 
 
     //RENDER LOOP
@@ -342,16 +154,17 @@
     var delta = 0;
     function render() {
 
-    	//mesh.rotation.x += 0.01;
-    	//mesh.rotation.y += 0.01;
+        delta += 0.1;
 
+        //uniform
+        mesh.material.uniforms.delta.value = 0.5 + Math.sin(delta) * 0.5;
 
-      //with sprite
-      
-      delta += 0.01;
-      camera.position.x = Math.sin(delta) * 200;
-      camera.position.z = Math.cos(delta) * 300;
-      
+        //attribute
+        for (var i = 0; i < vertexDisplacement.length; i ++) {
+            vertexDisplacement[i] = 0.5 + Math.sin(i + delta) * 0.25;
+        }
+        mesh.geometry.attributes.vertexDisplacement.needsUpdate = true;
+
 
     	renderer.render(scene, camera);
 
