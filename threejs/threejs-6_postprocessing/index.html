@@ -93,7 +93,7 @@
     var myEffect = {
         uniforms: {
             "tDiffuse": { value: null },
-            "amount":   { value: 1.0 }
+            "amount":   { value: 0.0 }
         },
         vertexShader: [
             "varying vec2 vUv;",
@@ -110,7 +110,7 @@
                 "vec4 color = texture2D( tDiffuse, vUv );",
                 "vec3 c = color.rgb;",
                 "color.r = c.r * 2.0;",
-                "color.g = c.g / 1.2;",
+                "color.g = c.g + amount;",
                 "color.b = c.b;",
                 "gl_FragColor = vec4( color.rgb , color.a );",
             "}"
@@ -125,7 +125,12 @@
     render();
 
 
+    // var delta = 0;
+    
     function render() {
+
+        // delta += 0.1;
+        // customPass.uniforms.amount.value = Math.sin(delta);
 
         // renderer.render(scene, camera);
         composer.render();
