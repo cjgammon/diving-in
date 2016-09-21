@@ -32,7 +32,7 @@
      // logarithmicDepthBuffer: true
     });
     //renderer.setClearColor(0x000000);
-    renderer.setClearColor(0xffffff);
+    renderer.setClearColor(0x000000);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -74,7 +74,7 @@
     });
     */
  
-    /*
+    
     //flat color
     var material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
@@ -97,9 +97,9 @@
       skinning: false,
       morphTargets: false
     });
-    */
+    
 
-    /*
+    
     //maps normal vectors to RGB colors
     var material = new THREE.MeshNormalMaterial({
       wireframe: false,
@@ -125,9 +125,9 @@
       visible: true,
       side: THREE.FrontSide //THREE.BackSide, THREE.DoubleSide
     });
-    */
+    
 
-    /*    
+     
     //non-shiny material
     var material = new THREE.MeshLambertMaterial({
       color: 0xF3FFE2,
@@ -138,9 +138,9 @@
       emissiveIntensity: 1,
       specularMap: null
     });
-    */
+    
 
-    /*
+    
     //shiny material
     var material = new THREE.MeshPhongMaterial({
       color: 0xF3FFE2,
@@ -157,18 +157,18 @@
       displacementBias: 0,
       specularMap: null
     });
-    */
+    
 
-    /*
+    
     //combination of non-shiny/shiny material
     var material = new THREE.MeshStandardMaterial({
       color: 0xF3FFE2,
       roughness: 0.5,
       metalness: 0.5
     });
-    */
+    
 
-   /* 
+   
     //PBR - physical based renderer
     var material = new THREE.MeshPhysicalMaterial({
       color: 0xF3FFE2,
@@ -178,11 +178,11 @@
       clearCoat: 0,
       claerCoatRoughness: 0
     });
-   */ 
+   
 
     
     //depth
-    //var material = new THREE.MeshDepthMaterial();
+    var material = new THREE.MeshDepthMaterial();
     
 
     //var material = new THREE.MeshMultiMaterial({color: 0xF3FFE2});
@@ -210,19 +210,19 @@
     //Custom Shader Material where built-in uniforms and attributes are not automatically prepended to teh code
     var material = new THREE.RawShaderMaterial({color: 0xF3FFE2});
     */
-
+/*
     
     var geometry = new THREE.BoxGeometry(100, 100, 100);
     geometry.computeLineDistances();
     var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.z = -1000;
+    mesh.position.z = -500;
     mesh.position.x = -100;
     scene.add(mesh);
 
 
     var geometry2 = new THREE.SphereGeometry(50, 20, 20);
     var mesh2 = new THREE.Mesh(geometry2, material);
-    mesh2.position.z = -1000;
+    mesh2.position.z = -500;
     mesh2.position.x = 100;
     scene.add(mesh2);
 
@@ -233,7 +233,7 @@
     mesh3.position.y = -100;
     scene.add(mesh3);
     
-
+*/
 
     /////////////////////Lines
 
@@ -244,29 +244,28 @@
       color: 0xF3FFE2,
       linewidth: 2
     });
-    */
+    
 
-    /*
+    
     //Dashed line **also compute distance of geometry**
     var material = new THREE.LineDashedMaterial({
       color: 0xF3FFE2,
       linewidth: 1,
       dashSize: 2, 
-      gapSize: 2
+      gapSize: 3
     });
-    */
+    
 
-    /*
     var geometry = new THREE.BoxGeometry(100, 100, 100);
     var mesh = new THREE.Line(geometry, material);
-    mesh.position.z = -1000;
+    mesh.position.z = -500;
     mesh.position.x = -100;
     scene.add(mesh);
 
 
     var geometry2 = new THREE.SphereGeometry(50, 20, 20);
     var mesh2 = new THREE.Line(geometry2, material);
-    mesh2.position.z = -1000;
+    mesh2.position.z = -500;
     mesh2.position.x = 100;
     scene.add(mesh2);
 
@@ -276,16 +275,15 @@
     mesh3.rotation.x = -90 * Math.PI / 180;
     mesh3.position.y = -100;
     scene.add(mesh3);
-    */
+    
 
 
     //for dashed lines
-    /*
     geometry.computeLineDistances();
     geometry2.computeLineDistances();
     geometry3.computeLineDistances();
+    
     */
-
 
 
     /////////////////////Points
@@ -319,7 +317,7 @@
 
     ////////////////////Sprite
 
-    /*
+    
     //Sprite material    
     var material = new THREE.SpriteMaterial({
       //map: new THREE.TextureLoader().load("59e37674fe09dc0ea6caf1b87115c575.jpg"),
@@ -331,7 +329,7 @@
     mesh.scale.set(100, 100, 100);
     mesh.position.z = -1000;
     scene.add(mesh);
-    */
+    
 
 
 
@@ -349,8 +347,8 @@
       //with sprite
       
       delta += 0.01;
-      camera.position.x = Math.sin(delta) * 200;
-      camera.position.z = Math.cos(delta) * 300;
+      //camera.position.x = Math.sin(delta) * 200;
+      //camera.position.z = Math.cos(delta) * 300;
       
 
     	renderer.render(scene, camera);
