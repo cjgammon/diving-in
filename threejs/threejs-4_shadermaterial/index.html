@@ -110,6 +110,7 @@ void main() {
     };
     var material = new THREE.ShaderMaterial({
         uniforms: customUniforms,
+        transparent: true,
         vertexShader: document.getElementById('vertexShader2').textContent,
         fragmentShader: document.getElementById('fragmentShader2').textContent
     });
